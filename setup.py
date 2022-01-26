@@ -13,12 +13,6 @@ install_requires = [
 
 packages=find_packages()
 
-package_dir={"": "naniwa"}
-
-console_scripts = [
-    # 'naniwa = converter.converter:convert',
-]
-
 extras_require={
     "qlib":["qulacs", "qiskit", "amazon-braket-sdk"]
 }
@@ -29,7 +23,6 @@ setup(
     name='naniwa',
     version='0.0.1',
     description='This is a library of converting qulacs circuits to an quantum circuit on another library.',
-    # package_dir=package_dir,
     packages=packages,
     install_requires=install_requires,
     py_modules=py_modules,
