@@ -1,5 +1,5 @@
 import pytest
-from qiskit_converter import QiskitConverter
+from naniwa.converter.qiskit.qiskit_converter import QiskitConverter
 from qiskit import QuantumCircuit
 from qulacs import QuantumCircuit as qulacsQuantumCircuit
 from qulacs.gate import Identity, X, Y, Z, H, S, Sdag, T, Tdag, CNOT, CZ, RX, RY, RZ, Pauli, PauliRotation, DenseMatrix

@@ -1,5 +1,5 @@
 import pytest
-from qulacs_converter import QulacsConverter
+from naniwa.converter.qulacs.qulacs_converter import QulacsConverter
 
 import qiskit
 import qulacs
