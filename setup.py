@@ -8,7 +8,8 @@ install_requires = [
     "matplotlib",
     "qulacs", 
     "qiskit_terra", 
-    "amazon-braket-sdk" # 必要な依存ライブラリがあれば記述
+    "amazon-braket-sdk", # 必要な依存ライブラリがあれば記述
+    "pytest"
 ]
 
 packages=find_packages()
