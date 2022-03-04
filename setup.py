@@ -19,7 +19,6 @@ extras_require={
 }
 
 quantum_packages = ['qulacs', 'qiskit', 'braket']
-# py_modules=['naniwa.converter.{0}.{0}_converter'.format(q_package) for q_package in quantum_packages]
 
 setup(
     name='naniwa',
@@ -27,5 +26,4 @@ setup(
     description='This is a library of converting qulacs circuits to an quantum circuit on another library.',
     packages=packages,
     install_requires=install_requires,
-    # py_modules=py_modules,
 )
