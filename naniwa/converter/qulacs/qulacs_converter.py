@@ -12,16 +12,16 @@ qiskit_dict = {
     "Sdag":       [qiskit.circuit.library.standard_gates.SdgGate,  0],
     "T":          [qiskit.circuit.library.standard_gates.TGate,    0],
     "Tdag":       [qiskit.circuit.library.standard_gates.TdgGate,  0],
+    "sqrtX":      [qiskit.circuit.library.standard_gates.SXGate,   0],
+    "sqrtXdag":   [qiskit.circuit.library.standard_gates.SXdgGate, 0],
     "CNOT":       [qiskit.circuit.library.standard_gates.CXGate,   0],
+    "SWAP":       [qiskit.circuit.library.standard_gates.SwapGate, 0],
     "CZ":         [qiskit.circuit.library.standard_gates.CZGate,   0],
     "X-rotation": [qiskit.circuit.library.standard_gates.RXGate,   1],
     "Y-rotation": [qiskit.circuit.library.standard_gates.RYGate,   1],
     "Z-rotation": [qiskit.circuit.library.standard_gates.RZGate,   1],
     "U2":         [qiskit.circuit.library.standard_gates.U2Gate,   0],
     "U3":         [qiskit.circuit.library.standard_gates.U3Gate,   0],
-    "SWAP":       [qiskit.circuit.library.standard_gates.SwapGate, 0],
-    "sqrtX":      [qiskit.circuit.library.standard_gates.SXGate,   0],
-    "sqrtXdag":   [qiskit.circuit.library.standard_gates.SXdgGate, 0],
 }
 
 braket_dict = {
@@ -34,6 +34,8 @@ braket_dict = {
     "Sdag":        [braket.circuits.gates.Si,      0],
     "T":           [braket.circuits.gates.T,       0],
     "Tdag":        [braket.circuits.gates.Ti,      0],
+    "sqrtX":       [braket.circuits.gates.V,       0],
+    "sqrtXdag":    [braket.circuits.gates.Vi,      0],
     "CNOT":        [braket.circuits.gates.CNot,    0],
     "SWAP":        [braket.circuits.gates.Swap,    0],
     "CZ":          [braket.circuits.gates.CZ,      0],
