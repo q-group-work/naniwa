@@ -1,61 +1,58 @@
+import qulacs 
 from braket.circuits import Circuit
 
-class Braket:
-    def __init__(self):
+class QulacsConverter_2_Braket:
+    def __init__(self, circuit: qulacs.QuantumCircuit, convert_type='braket'):
+        self.convert_type = convert_type
+        self.qubit_count = circuit.get_qubit_count()
         self.circ = Circuit()
-        self.gate_one = {"I", "X", "Y", "Z", "H", "S", "Sdag", "T", "Tdag", "sqrtX", "sqrtXdag"}
-        self.gate_one_rotation = {"X-rotation", "Y-rotation", "Z-rotation"}
-
-        self.gate_two = {"CNOT", "CZ", "SWAP"}
-
-        self.gate_any = {"DenseMatrix"}
-
-    def get_angle(self):
-        return 0
-    
-    def append(self, gate):
-        parsing_dict = {
-            "I": self.circ.i,
-            "X": self.circ.x,
-            "Y": self.circ.y,
-            "Z": self.circ.z,
-            "H": self.circ.h,
-
-            "S": self.circ.s,
-            "T": self.circ.t,
-
-            "X-rotation": self.circ.rx,
-            "Y-rotation": self.circ.ry,
-            "Z-rotation": self.circ.rz,
-
-            "CNOT": self.circ.cnot,
-            "SWAP": self.circ.swap,
-            "CZ": self.circ.cz,
-
-            "DenseMatrix": self.circ.unitary,
+        self.braket_dict = {
+            "I":           [self.circ.i,       0],
+            "X":           [self.circ.x,       0],
+            "Y":           [self.circ.y,       0],
+            "Z":           [self.circ.z,       0],
+            "H":           [self.circ.h,       0],
+            "S":           [self.circ.s,       0],
+            "T":           [self.circ.t,       0],
+            "CNOT":        [self.circ.cnot,    0],
+            "SWAP":        [self.circ.swap,    0],
+            "CZ":          [self.circ.cz,      0],
+            "X-rotation":  [self.circ.rx,      1],
+            "Y-rotation":  [self.circ.ry,      1],
+            "Z-rotation":  [self.circ.rz,      1],
+            "DenseMatrix": [self.circ.unitary, 2],
         }
 
-        gate_name = gate.get_name()
-        if gate_name in self.gate_one_rotation:
-            parsing_dict[gate_name](gate.get_target_index_list()[0], self.get_angle())
-        elif gate_name in (self.gate_two | self.gate_one):
-            parsing_dict[gate_name](*gate.get_control_index_list(), *gate.get_target_index_list())
-        elif gate_name in self.gate_any:
-            parsing_dict[gate_name](matrix=gate.get_matrix(), targets=gate.get_target_index_list())
-        else:
-            print("Warning: "+ gate_name + " is unsupported yet.")
-            try:
-                parsing_dict["DenseMatrix"](matrix=gate.get_matrix(), targets=gate.get_target_index_list())
-            except Exception as e:
-                print(e)
-                print("Warning: "+ gate_name + " is unsupported yet.")
-                print("Please represent the circuit by using supported gates, if you use .draw()")
+        convert_dict = {
+                'braket': [self.braket_dict, self.braket_convert],
+        }
+        self.dict = convert_dict[self.convert_type][0]
+        self.func = convert_dict[self.convert_type][1]
+        self.circuit = circuit
 
-    def parsing(self, qulacs_circuit):
-        self.circ = Circuit()
-        for i in range(qulacs_circuit.get_gate_count()):
-            gate = qulacs_circuit.get_gate(i)
-            self.append(gate)
+    def convert(self):
+        return self.func()
+
+    def braket_convert(self):
+        braket_circuit = Circuit()
+        for i in range(self.circuit.get_gate_count()):
+            gate = self.circuit.get_gate(i)
+            parse = self.dict.get(gate.get_name())
+            if parse is None:
+                parse = self.dict.get("DenseMatrix")
+            braket_gate = parse[0]
+            target = gate.get_target_index_list()
+            control = gate.get_control_index_list()
+            if parse[1] == 0:
+                braket_gate(*control, *target)
+            elif parse[1] == 1:
+                angle = gate.get_angle()
+                braket_gate(*target, angle)
+            elif parse[1] == 2:
+                matrix=gate.get_matrix()
+                braket_gate(matrix=matrix, targets=target)
+
+        return self.circ
 
     def draw(self):
         print(self.circ)
