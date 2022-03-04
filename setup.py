@@ -8,7 +8,8 @@ install_requires = [
     "matplotlib",
     "qulacs", 
     "qiskit_terra", 
-    "amazon-braket-sdk" # 必要な依存ライブラリがあれば記述
+    "amazon-braket-sdk", # 必要な依存ライブラリがあれば記述
+    "pytest"
 ]
 
 packages=find_packages()
@@ -17,7 +18,7 @@ extras_require={
     "qlib":["qulacs", "qiskit", "amazon-braket-sdk"]
 }
 
-py_modules=[splitext(basename(path))[0] for path in glob('converter/*.py')]
+quantum_packages = ['qulacs', 'qiskit', 'braket']
 
 setup(
     name='naniwa',
@@ -25,5 +26,4 @@ setup(
     description='This is a library of converting qulacs circuits to an quantum circuit on another library.',
     packages=packages,
     install_requires=install_requires,
-    py_modules=py_modules,
 )
