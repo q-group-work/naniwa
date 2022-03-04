@@ -6,8 +6,7 @@ class Braket:
         self.gate_one = {"I", "X", "Y", "Z", "H", "S", "Sdag", "T", "Tdag", "sqrtX", "sqrtXdag"}
         self.gate_one_rotation = {"X-rotation", "Y-rotation", "Z-rotation"}
 
-        self.gate_two = {"CNOT", "CZ"} # control, target
-        self.gate_two_target_only = {"SWAP"} # target, target
+        self.gate_two = {"CNOT", "CZ", "SWAP"}
 
         self.gate_any = {"DenseMatrix"}
 
@@ -37,19 +36,20 @@ class Braket:
         }
 
         gate_name = gate.get_name()
-        if gate_name in self.gate_one:
-            parsing_dict[gate_name](gate.get_target_index_list()[0])
-        elif gate_name in self.gate_one_rotation:
+        if gate_name in self.gate_one_rotation:
             parsing_dict[gate_name](gate.get_target_index_list()[0], self.get_angle())
-        elif gate_name in self.gate_two:
-            parsing_dict[gate_name](gate.get_control_index_list()[0], gate.get_target_index_list()[0])
-        elif gate_name in self.gate_two_target_only:
-            parsing_dict[gate_name](*gate.get_target_index_list())
+        elif gate_name in (self.gate_two | self.gate_one):
+            parsing_dict[gate_name](*gate.get_control_index_list(), *gate.get_target_index_list())
         elif gate_name in self.gate_any:
             parsing_dict[gate_name](matrix=gate.get_matrix(), targets=gate.get_target_index_list())
         else:
             print("Warning: "+ gate_name + " is unsupported yet.")
-            print("Please represent the circuit by using supported gates, if you use .draw()")
+            try:
+                parsing_dict["DenseMatrix"](matrix=gate.get_matrix(), targets=gate.get_target_index_list())
+            except Exception as e:
+                print(e)
+                print("Warning: "+ gate_name + " is unsupported yet.")
+                print("Please represent the circuit by using supported gates, if you use .draw()")
 
     def parsing(self, qulacs_circuit):
         self.circ = Circuit()
