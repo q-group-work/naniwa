@@ -1,5 +1,4 @@
 import pytest
-# from naniwa.converter.qiskit.qiskit_converter import QiskitConverter
 from naniwa import QiskitConverter
 from qiskit import QuantumCircuit
 from qulacs import QuantumCircuit as qulacsQuantumCircuit
