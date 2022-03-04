@@ -1,5 +1,5 @@
 import pytest
-from naniwa.converter.qiskit.qiskit_converter import QiskitConverter
+from naniwa import QiskitConverter
 from qiskit import QuantumCircuit
 from qulacs import QuantumCircuit as qulacsQuantumCircuit
 from qulacs.gate import Identity, X, Y, Z, H, S, Sdag, T, Tdag, CNOT, CZ, RX, RY, RZ, Pauli, PauliRotation, DenseMatrix
@@ -30,20 +30,23 @@ def test_qiskit_converter():
     converted_circuit = con.convert()
 
     qulacs_circuit = qulacsQuantumCircuit(2)
-    qulacs_circuit.add_H_gate(0)
-    qulacs_circuit.add_Identity_gate(0)
-    qulacs_circuit.add_X_gate(0)
-    qulacs_circuit.add_Y_gate(0)
-    qulacs_circuit.add_Z_gate(0)
-    qulacs_circuit.add_S_gate(0)
-    qulacs_circuit.add_Sdag_gate(0)
-    qulacs_circuit.add_T_gate(0)
-    qulacs_circuit.add_Tdag_gate(0)
+    qulacs_circuit.add_gate(H(0))
+    qulacs_circuit.add_gate(Identity(0))
+    qulacs_circuit.add_gate(X(0))
+    qulacs_circuit.add_gate(Y(0))
+    qulacs_circuit.add_gate(Z(0))
+    qulacs_circuit.add_gate(S(0))
+    qulacs_circuit.add_gate(Sdag(0))
+    qulacs_circuit.add_gate(T(0))
+    qulacs_circuit.add_gate(Tdag(0))
     qulacs_circuit.add_gate(RX(0,math.pi/2))
     qulacs_circuit.add_gate(RY(0,math.pi/2))
     qulacs_circuit.add_gate(RZ(0,math.pi/2))
     qulacs_circuit.add_gate(CNOT(0,1))
     qulacs_circuit.add_gate(CZ(0,1))
 
+    converted_gates = [converted_circuit.get_gate(i).get_name() for i in range(converted_circuit.get_gate_count())]
+    qulacs_gates = [qulacs_circuit.get_gate(i).get_name() for i in range(qulacs_circuit.get_gate_count())]
 
-    assert converted_circuit == qulacs_circuit
+
+    assert converted_gates == qulacs_gates
