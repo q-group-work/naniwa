@@ -3,22 +3,22 @@ import braket
 from braket.circuits import Circuit
 
 braket_dict = {
-    "I":           [braket.circuits.Gate.I,       0],
-    "X":           [braket.circuits.Gate.X,       0],
-    "Y":           [braket.circuits.Gate.Y,       0],
-    "Z":           [braket.circuits.Gate.Z,       0],
-    "H":           [braket.circuits.Gate.H,       0],
-    "S":           [braket.circuits.Gate.S,       0],
-    "Sdag":        [braket.circuits.Gate.Si,      0],
-    "T":           [braket.circuits.Gate.T,       0],
-    "Tdag":        [braket.circuits.Gate.Ti,      0],
-    "CNOT":        [braket.circuits.Gate.CNot,    0],
-    "SWAP":        [braket.circuits.Gate.Swap,    0],
-    "CZ":          [braket.circuits.Gate.CZ,      0],
-    "X-rotation":  [braket.circuits.Gate.Rx,      1],
-    "Y-rotation":  [braket.circuits.Gate.Ry,      1],
-    "Z-rotation":  [braket.circuits.Gate.Rz,      1],
-    "DenseMatrix": [braket.circuits.Gate.Unitary, 2],
+    "I":           [braket.circuits.gates.I,       0],
+    "X":           [braket.circuits.gates.X,       0],
+    "Y":           [braket.circuits.gates.Y,       0],
+    "Z":           [braket.circuits.gates.Z,       0],
+    "H":           [braket.circuits.gates.H,       0],
+    "S":           [braket.circuits.gates.S,       0],
+    "Sdag":        [braket.circuits.gates.Si,      0],
+    "T":           [braket.circuits.gates.T,       0],
+    "Tdag":        [braket.circuits.gates.Ti,      0],
+    "CNOT":        [braket.circuits.gates.CNot,    0],
+    "SWAP":        [braket.circuits.gates.Swap,    0],
+    "CZ":          [braket.circuits.gates.CZ,      0],
+    "X-rotation":  [braket.circuits.gates.Rx,      1],
+    "Y-rotation":  [braket.circuits.gates.Ry,      1],
+    "Z-rotation":  [braket.circuits.gates.Rz,      1],
+    "DenseMatrix": [braket.circuits.gates.Unitary, 2],
 }
 
 class QulacsConverter_2_Braket:
@@ -37,7 +37,7 @@ class QulacsConverter_2_Braket:
         return self.func()
 
     def braket_convert(self):
-        braket_circuit = Circuit()
+        braket_circuit = braket.circuits.Circuit()
         for i in range(self.circuit.get_gate_count()):
             gate = self.circuit.get_gate(i)
             parse = self.dict.get(gate.get_name())
