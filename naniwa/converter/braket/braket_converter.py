@@ -1,30 +1,31 @@
-import qulacs 
+import qulacs
+import braket
 from braket.circuits import Circuit
+
+braket_dict = {
+    "I":           [braket.circuits.Gate.I,       0],
+    "X":           [braket.circuits.Gate.X,       0],
+    "Y":           [braket.circuits.Gate.Y,       0],
+    "Z":           [braket.circuits.Gate.Z,       0],
+    "H":           [braket.circuits.Gate.H,       0],
+    "S":           [braket.circuits.Gate.S,       0],
+    "T":           [braket.circuits.Gate.T,       0],
+    "CNOT":        [braket.circuits.Gate.CNot,    0],
+    "SWAP":        [braket.circuits.Gate.Swap,    0],
+    "CZ":          [braket.circuits.Gate.CZ,      0],
+    "X-rotation":  [braket.circuits.Gate.Rx,      1],
+    "Y-rotation":  [braket.circuits.Gate.Ry,      1],
+    "Z-rotation":  [braket.circuits.Gate.Rz,      1],
+    "DenseMatrix": [braket.circuits.Gate.Unitary, 2],
+}
 
 class QulacsConverter_2_Braket:
     def __init__(self, circuit: qulacs.QuantumCircuit, convert_type='braket'):
         self.convert_type = convert_type
         self.qubit_count = circuit.get_qubit_count()
-        self.circ = Circuit()
-        self.braket_dict = {
-            "I":           [self.circ.i,       0],
-            "X":           [self.circ.x,       0],
-            "Y":           [self.circ.y,       0],
-            "Z":           [self.circ.z,       0],
-            "H":           [self.circ.h,       0],
-            "S":           [self.circ.s,       0],
-            "T":           [self.circ.t,       0],
-            "CNOT":        [self.circ.cnot,    0],
-            "SWAP":        [self.circ.swap,    0],
-            "CZ":          [self.circ.cz,      0],
-            "X-rotation":  [self.circ.rx,      1],
-            "Y-rotation":  [self.circ.ry,      1],
-            "Z-rotation":  [self.circ.rz,      1],
-            "DenseMatrix": [self.circ.unitary, 2],
-        }
 
         convert_dict = {
-                'braket': [self.braket_dict, self.braket_convert],
+                'braket': [braket_dict, self.braket_convert],
         }
         self.dict = convert_dict[self.convert_type][0]
         self.func = convert_dict[self.convert_type][1]
@@ -44,15 +45,18 @@ class QulacsConverter_2_Braket:
             target = gate.get_target_index_list()
             control = gate.get_control_index_list()
             if parse[1] == 0:
-                braket_gate(*control, *target)
+                instr = braket.circuits.Instruction(braket_gate(), control+target)
+                braket_circuit.add(instr)
             elif parse[1] == 1:
                 angle = gate.get_angle()
-                braket_gate(*target, angle)
+                instr = braket.circuits.Instruction(braket_gate(angle), target)
+                braket_circuit.add(instr)
             elif parse[1] == 2:
                 matrix=gate.get_matrix()
-                braket_gate(matrix=matrix, targets=target)
+                instr = braket.circuits.Instruction(braket_gate(matrix=matrix, display_name=gate.get_name()), target)
+                braket_circuit.add(instr)
 
-        return self.circ
+        return braket_circuit
 
     def draw(self):
         print(self.circ)
