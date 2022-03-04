@@ -1,6 +1,6 @@
-import qulacs 
+import qulacs
 import qiskit
-import braket
+import braket.circuits
 
 qiskit_dict = {
     "I":          [qiskit.circuit.library.standard_gates.IGate,    0],
