@@ -16,4 +16,6 @@ jobs:
         python-version: 3.9.6
     - name: Install dependencies
       run: pip install .
+    - name: All tests
+      run: pytest tests -v
 
