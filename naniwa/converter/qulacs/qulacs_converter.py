@@ -1,5 +1,6 @@
 import qulacs 
 import qiskit
+from qiskit.circuit import Parameter
 
 qiskit_dict = {
     "I":          [qiskit.circuit.library.standard_gates.IGate,    0],
@@ -38,8 +39,9 @@ class QulacsConverter:
     def convert(self):
         return self.func()
 
-    def qiskit_convert(self):
+    def qiskit_convert(self,  parameterized=False):
         qiskit_circuit = qiskit.QuantumCircuit(self.qubit_count)
+        num=0
         for i in range(self.circuit.get_gate_count()):
             gate = self.circuit.get_gate(i)
             parse = self.dict.get(gate.get_name())
@@ -52,7 +54,12 @@ class QulacsConverter:
             if parse[1] == 0:
                 qiskit_circuit.append(qiskit_gate(), control + target, [])
             elif parse[1] == 1:
-                angle = gate.get_angle()
-                qiskit_circuit.append(qiskit_gate(angle), control + target, [])
+                if parameterized:
+                    theta = Parameter('θ{}'.format(num))
+                    num+=1
+                    qiskit_circuit.append(qiskit_gate(theta), control + target, [])
+                else:
+                    angle = gate.get_angle()
+                    qiskit_circuit.append(qiskit_gate(angle), control + target, [])
 
         return qiskit_circuit
