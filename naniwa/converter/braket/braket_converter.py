@@ -47,27 +47,20 @@ class BraketConverter:
 
     def qulacs_convert(self):
         qulacs_circuit = qulacs.QuantumCircuit(self.qubit_count)
-        for i, gate_data in enumerate(self.instructions):     #要変更
+        for i, instr in enumerate(self.instructions):     #要変更
             
-            parse = self.dict.get(gate_data[0].name)           #要変更
+            parse = self.dict.get(instr.operator.name)           
             if parse is None:
-                print("Warning: "+ gate_data[0].name + " is unsupported yet.")  #要変更
+                print("Warning: "+ instr.operator.name + " is unsupported yet.")  
                 continue
             qulacs_gate = parse[0]
-            qubit_index_list = [qubit.index for qubit in gate_data[1]] # 要変更
+            qubit_index_list = [int(qubit) for qubit in instr.target] # 要変更
             if parse[1] == 0:
                 qulacs_circuit.add_gate(qulacs_gate(qubit_index_list[0]))
             elif parse[1] == 1:
                 qulacs_circuit.add_gate(qulacs_gate(qubit_index_list[0], qubit_index_list[1]))
             elif parse[1] == 2:
-                angle_list = gate_data[0].params
+                angle_list = instr.operator.angle
                 qulacs_circuit.add_gate(qulacs_gate(qubit_index_list[0], angle_list[0]))
-            elif parse[1] == 3:
-                angle_list = gate_data[0].params
-                qulacs_circuit.add_gate(qulacs_gate(qubit_index_list[0], angle_list[0],  angle_list[1]))
-            elif parse[1] == 4:
-                angle_list = gate_data[0].params
-                qulacs_circuit.add_gate(qulacs_gate(qubit_index_list[0], angle_list[0],  angle_list[1], angle_list[2]))
-
 
         return qulacs_circuit
